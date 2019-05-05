@@ -50,6 +50,7 @@ public class CircleProgressBar extends View {
 
     private static final String COLOR_FFF2A670 = "#fff2a670";
     private static final String COLOR_FFD3D3D5 = "#ffe3e3e5";
+    private static final String COLOR_SPLIT_LINE = "#9fffffff";
 
     private final RectF mProgressRectF = new RectF();
     private final RectF mInternalProgressRectF = new RectF();
@@ -95,6 +96,7 @@ public class CircleProgressBar extends View {
     // internal_background_color 内部圆背景
     private int mInternalBackgroundColor;
 
+    private int mSplitLineColor;
     //the rotate degree of the canvas, default is -90.
     private int mStartDegree;
 
@@ -161,6 +163,7 @@ public class CircleProgressBar extends View {
         mStartDegree = a.getInt(R.styleable.CircleProgressBar_progress_start_degree, DEFAULT_START_DEGREE);
         mDrawBackgroundOutsideProgress = a.getBoolean(R.styleable.CircleProgressBar_drawBackgroundOutsideProgress, false);
 
+        mSplitLineColor = Color.parseColor(COLOR_SPLIT_LINE);
         a.recycle();
     }
 
@@ -326,15 +329,6 @@ public class CircleProgressBar extends View {
         canvas.drawArc(mProgressRectF, 0.0f, MAX_DEGREE * mProgress / mMax, true, mProgressPaint);
     }
 
-    /**
-     * 绘制背景
-     *
-     * @param canvas
-     */
-    private void drawBackground(Canvas canvas) {
-        mInternalBackgroundPaint.setStrokeWidth(mProgressStrokeWidth);
-        canvas.drawArc(mInternalProgressRectF, 0.0f, MAX_DEGREE, true, mInternalBackgroundPaint);
-    }
 
     /**
      * Just draw arc
@@ -353,19 +347,31 @@ public class CircleProgressBar extends View {
         drawSplitLine(canvas);
     }
 
+
+    /**
+     * 绘制背景
+     *
+     * @param canvas
+     */
+    private void drawBackground(Canvas canvas) {
+        mInternalBackgroundPaint.setStyle(Paint.Style.FILL);
+        mInternalBackgroundPaint.setColor(mInternalBackgroundColor);
+        mInternalBackgroundPaint.setStrokeWidth(mProgressStrokeWidth);
+        canvas.drawArc(mInternalProgressRectF, 0.0f, MAX_DEGREE, true, mInternalBackgroundPaint);
+    }
+
     private void drawSplitLine(Canvas canvas) {
-        float outerCircleRadius = mRadius;
-        float interCircleRadius = mRadius - mProgressStrokeWidth;
+        float outerCircleRadius = mRadius - mSplitLineWidth/2;
+        float interCircleRadius = mRadius - mProgressStrokeWidth + mSplitLineWidth/2;
 
 
 //        float unitDegrees = (float) (2.0f * Math.PI / mMax);
 //        int progressLineCount = (int) ((float) mProgress / (float) mMax * mMax);
 
 //        float rotateDegrees = progressLineCount* -unitDegrees;
-
+        mInternalBackgroundPaint.setStyle(mProgressPaint.getStyle());
         mInternalBackgroundPaint.setStrokeWidth(mSplitLineWidth);
-
-
+        mInternalBackgroundPaint.setColor(mSplitLineColor);
         if (mSplitList != null && mSplitList.size() > 0) {
             for (int progress : mSplitList) {
                 if (progress >= 0 && progress < mProgress) {
