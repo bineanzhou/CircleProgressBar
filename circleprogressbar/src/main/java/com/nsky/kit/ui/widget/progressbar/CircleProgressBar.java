@@ -20,7 +20,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.dinuscxj.progressbar.R;
+import com.bineanzhou.progressbar.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

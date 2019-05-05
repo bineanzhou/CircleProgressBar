@@ -3,14 +3,14 @@
 [CircleProgressBar](https://github.com/bineanzhou/CircleProgressBar)继承View, 是包含实心和线条两种风格的圆环进度条. 此外, 进度值可以随意定制.
 如果你对酷炫的进度条比较感兴趣, 或许你更喜欢 [LoadingDrawable](https://github.com/bineanzhou/LoadingDrawable).
 
-![](https://raw.githubusercontent.com/dinuscxj/CircleProgressBar/master/Preview/CircleProgressBar.png?width=300)
+![](https://raw.githubusercontent.com/bineanzhou/CircleProgressBar/master/Preview/CircleProgressBar.png?width=300)
 
 ### 用法
 
 #### Gradle
  ```gradle
  dependencies {
-    compile 'com.dinuscxj:circleprogressbar:1.3.0'
+    compile 'com.bineanzhou:circleprogressbar:1.3.0'
  }
  ```
 
@@ -126,7 +126,7 @@ The **line style**:
  ***QQ 群:*** **342748245**
 
 ### License
-    Copyright 2015-2019 dinuscxj
+    Copyright 2015-2019 bineanzhou
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

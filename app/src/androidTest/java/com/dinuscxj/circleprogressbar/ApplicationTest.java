@@ -1,4 +1,4 @@
-package com.dinuscxj.circleprogressbar;
+package com.bineanzhou.circleprogressbar;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

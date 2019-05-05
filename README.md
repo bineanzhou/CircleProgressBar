@@ -5,14 +5,14 @@
 The [CircleProgressBar](https://github.com/bineanzhou/CircleProgressBar) extends View, It has both solid and line two styles. Besides, progress value can be freely customized.
 If you are interested in cool loading animations, you can see [LoadingDrawable](https://github.com/bineanzhou/LoadingDrawable).
 
-![](https://raw.githubusercontent.com/dinuscxj/CircleProgressBar/master/Preview/CircleProgressBar.png?width=300)
+![](https://raw.githubusercontent.com/bineanzhou/CircleProgressBar/master/Preview/CircleProgressBar.png?width=300)
 
 ### Usage
 
 #### Gradle
  ```gradle
  dependencies {
-    compile 'com.dinuscxj:circleprogressbar:1.3.0'
+    compile 'com.bineanzhou:circleprogressbar:1.3.0'
  }
  ```
 
@@ -120,13 +120,9 @@ format progress
 2. highly customizable, you can set the two styles of progress bar, you can set the color of the bars, you can set the color and size of the progress of the text, due to the progress of the code for formatting text uses String.format (), so progress text can be customized as needed
 3. Code elegant, very comprehensive code comments, neat format, you can set the relevant properties directly in xml.
 
-### About me
-I like Android, like open source, and like doing something interesting. :)
-If you like CircleProgressBar or use it, you can star this repo and send me some feedback. Thanks! ~_~
- ***QQ Group:*** **342748245**
 
 ### License
-    Copyright 2015-2019 dinuscxj
+    Copyright 2015-2019 bineanzhou
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

@@ -5,7 +5,7 @@ android {
     buildToolsVersion "27.0.3"
 
     defaultConfig {
-        applicationId "com.dinuscxj.circleprogressbar"
+        applicationId "com.bineanzhou.circleprogressbar"
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 1

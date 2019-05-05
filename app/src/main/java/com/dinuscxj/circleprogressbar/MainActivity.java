@@ -1,4 +1,4 @@
-package com.dinuscxj.circleprogressbar;
+package com.bineanzhou.circleprogressbar;
 
 import android.animation.ValueAnimator;
 import android.os.Bundle;

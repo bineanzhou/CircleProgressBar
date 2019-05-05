@@ -1,4 +1,4 @@
-package com.dinuscxj.progressbar;
+package com.bineanzhou.progressbar;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
