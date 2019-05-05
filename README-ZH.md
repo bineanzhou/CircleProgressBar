@@ -3,7 +3,7 @@
 [CircleProgressBar](https://github.com/bineanzhou/CircleProgressBar)继承View, 是包含实心和线条两种风格的圆环进度条. 此外, 进度值可以随意定制.
 如果你对酷炫的进度条比较感兴趣, 或许你更喜欢 [LoadingDrawable](https://github.com/bineanzhou/LoadingDrawable).
 
-![](https://raw.githubusercontent.com/dinuscxj/CircleProgressBar/master/Preview/CircleProgressBar.gif?width=300)
+![](https://raw.githubusercontent.com/dinuscxj/CircleProgressBar/master/Preview/CircleProgressBar.png?width=300)
 
 ### 用法
 
@@ -76,7 +76,7 @@ The **line style**:
 	android:layout_width="50dp"
 	android:layout_height="50dp"
 
-	app:style="line"
+	app:progress_style="line"
 	
 	app:background_color="@color/holo_red_light"
 	
@@ -94,8 +94,8 @@ The **line style**:
     
 	app:progress_stroke_cap="round"
 
-	app:line_width="4dp"
-	app:line_count="30"/>
+	app:progress_line_width="4dp"
+	app:progress_line_count="30"/>
 ```
 
 格式化 progress

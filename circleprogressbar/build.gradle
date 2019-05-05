@@ -8,12 +8,37 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    android.libraryVariants.all { variant ->
+        variant.outputs.all {
+            //只处理生产版本
+            if (buildType.name == 'release') {
+                variant.outputs.each { output ->
+                    def fileName = "${project.name}${variant.flavorName}_V${android.defaultConfig.versionName}_${build_time}.aar"
+                    outputFileName = fileName
+                }
+
+                variant.assemble.doLast {
+                    variant.outputs.each { output ->
+                        def outputFile = output.outputFile
+                        def outputPath = LIB_DIR_PATH
+                        println "生成aar ${LIB_DIR_PATH}/${outputFileName}"
+                        delete "${LIB_DIR_PATH}/${outputFileName}"
+                        copy {
+                            from outputFile
+                            into outputPath
+                        }
+                    }
+                }
+            }
         }
     }
 }

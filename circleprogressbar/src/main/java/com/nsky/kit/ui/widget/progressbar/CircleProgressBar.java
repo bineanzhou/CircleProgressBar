@@ -1,8 +1,5 @@
 package com.nsky.kit.ui.widget.progressbar;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -24,6 +21,11 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.dinuscxj.progressbar.R;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CircleProgressBar extends View {
     private static final int DEFAULT_MAX = 100;
@@ -50,10 +52,13 @@ public class CircleProgressBar extends View {
     private static final String COLOR_FFD3D3D5 = "#ffe3e3e5";
 
     private final RectF mProgressRectF = new RectF();
+    private final RectF mInternalProgressRectF = new RectF();
     private final Rect mProgressTextRect = new Rect();
 
     private final Paint mProgressPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
     private final Paint mProgressBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mInternalBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private final Paint mProgressTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
@@ -62,6 +67,7 @@ public class CircleProgressBar extends View {
     private float mCenterY;
 
     private int mProgress;
+    private ArrayList<Integer> mSplitList = new ArrayList<>();
     private int mMax = DEFAULT_MAX;
 
     //Only work well in the Line Style, represents the line count of the rings included
@@ -71,6 +77,8 @@ public class CircleProgressBar extends View {
 
     //Stroke width of the progress of the progress bar
     private float mProgressStrokeWidth;
+
+    private float mSplitLineWidth;//分割线宽度
 
     //Text size of the progress of the progress bar
     private float mProgressTextSize;
@@ -83,6 +91,9 @@ public class CircleProgressBar extends View {
     private int mProgressTextColor;
     //Background color of the progress of the progress bar
     private int mProgressBackgroundColor;
+
+    // internal_background_color 内部圆背景
+    private int mInternalBackgroundColor;
 
     //the rotate degree of the canvas, default is -90.
     private int mStartDegree;
@@ -130,21 +141,22 @@ public class CircleProgressBar extends View {
     private void initFromAttributes(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircleProgressBar);
 
-        mLineCount = a.getInt(R.styleable.CircleProgressBar_line_count, DEFAULT_LINE_COUNT);
+        mLineCount = a.getInt(R.styleable.CircleProgressBar_progress_line_count, DEFAULT_LINE_COUNT);
 
-        mStyle = a.getInt(R.styleable.CircleProgressBar_style, LINE);
+        mStyle = a.getInt(R.styleable.CircleProgressBar_progress_style, LINE);
         mShader = a.getInt(R.styleable.CircleProgressBar_progress_shader, LINEAR);
         mCap = a.hasValue(R.styleable.CircleProgressBar_progress_stroke_cap) ?
                 Paint.Cap.values()[a.getInt(R.styleable.CircleProgressBar_progress_stroke_cap, 0)] : Paint.Cap.BUTT;
 
-        mLineWidth = a.getDimensionPixelSize(R.styleable.CircleProgressBar_line_width, UnitUtils.dip2px(getContext(), DEFAULT_LINE_WIDTH));
-        mProgressTextSize = a.getDimensionPixelSize(R.styleable.CircleProgressBar_progress_text_size, UnitUtils.dip2px(getContext(), DEFAULT_PROGRESS_TEXT_SIZE));
-        mProgressStrokeWidth = a.getDimensionPixelSize(R.styleable.CircleProgressBar_progress_stroke_width, UnitUtils.dip2px(getContext(), DEFAULT_PROGRESS_STROKE_WIDTH));
+        mLineWidth = a.getDimensionPixelSize(R.styleable.CircleProgressBar_progress_line_width, dip2px(getContext(), DEFAULT_LINE_WIDTH));
+        mProgressTextSize = a.getDimensionPixelSize(R.styleable.CircleProgressBar_progress_text_size, dip2px(getContext(), DEFAULT_PROGRESS_TEXT_SIZE));
+        mProgressStrokeWidth = a.getDimensionPixelSize(R.styleable.CircleProgressBar_progress_stroke_width, dip2px(getContext(), DEFAULT_PROGRESS_STROKE_WIDTH));
 
         mProgressStartColor = a.getColor(R.styleable.CircleProgressBar_progress_start_color, Color.parseColor(COLOR_FFF2A670));
         mProgressEndColor = a.getColor(R.styleable.CircleProgressBar_progress_end_color, Color.parseColor(COLOR_FFF2A670));
         mProgressTextColor = a.getColor(R.styleable.CircleProgressBar_progress_text_color, Color.parseColor(COLOR_FFF2A670));
         mProgressBackgroundColor = a.getColor(R.styleable.CircleProgressBar_progress_background_color, Color.parseColor(COLOR_FFD3D3D5));
+        mInternalBackgroundColor = a.getColor(R.styleable.CircleProgressBar_internal_background_color, Color.TRANSPARENT);
 
         mStartDegree = a.getInt(R.styleable.CircleProgressBar_progress_start_degree, DEFAULT_START_DEGREE);
         mDrawBackgroundOutsideProgress = a.getBoolean(R.styleable.CircleProgressBar_drawBackgroundOutsideProgress, false);
@@ -156,6 +168,7 @@ public class CircleProgressBar extends View {
      * Paint initialization
      */
     private void initPaint() {
+        mSplitLineWidth = dip2px(getContext(), 1);
         mProgressTextPaint.setTextAlign(Paint.Align.CENTER);
         mProgressTextPaint.setTextSize(mProgressTextSize);
 
@@ -168,6 +181,11 @@ public class CircleProgressBar extends View {
         mProgressBackgroundPaint.setStrokeWidth(mProgressStrokeWidth);
         mProgressBackgroundPaint.setColor(mProgressBackgroundColor);
         mProgressBackgroundPaint.setStrokeCap(mCap);
+
+        mInternalBackgroundPaint.setStyle(Paint.Style.FILL);
+        mInternalBackgroundPaint.setStrokeWidth(mProgressStrokeWidth);
+        mInternalBackgroundPaint.setColor(mInternalBackgroundColor);
+        mInternalBackgroundPaint.setStrokeCap(mCap);
     }
 
     /**
@@ -309,9 +327,20 @@ public class CircleProgressBar extends View {
     }
 
     /**
+     * 绘制背景
+     *
+     * @param canvas
+     */
+    private void drawBackground(Canvas canvas) {
+        mInternalBackgroundPaint.setStrokeWidth(mProgressStrokeWidth);
+        canvas.drawArc(mInternalProgressRectF, 0.0f, MAX_DEGREE, true, mInternalBackgroundPaint);
+    }
+
+    /**
      * Just draw arc
      */
     private void drawSolidLineProgress(Canvas canvas) {
+        drawBackground(canvas);
         if (mDrawBackgroundOutsideProgress) {
             float startAngle = MAX_DEGREE * mProgress / mMax;
             float sweepAngle = MAX_DEGREE - startAngle;
@@ -321,21 +350,38 @@ public class CircleProgressBar extends View {
         }
         canvas.drawArc(mProgressRectF, 0.0f, MAX_DEGREE * mProgress / mMax, false, mProgressPaint);
 
+        drawSplitLine(canvas);
+    }
+
+    private void drawSplitLine(Canvas canvas) {
         float outerCircleRadius = mRadius;
-        float interCircleRadius = mRadius - mLineWidth;
+        float interCircleRadius = mRadius - mProgressStrokeWidth;
 
 
-        float unitDegrees = (float) (2.0f * Math.PI / mMax);
-        int progressLineCount = (int) ((float) mProgress / (float) mMax * mMax);
+//        float unitDegrees = (float) (2.0f * Math.PI / mMax);
+//        int progressLineCount = (int) ((float) mProgress / (float) mMax * mMax);
 
 //        float rotateDegrees = progressLineCount* -unitDegrees;
-        float rotateDegrees = (float) (- 2.0f * Math.PI * (mMax/2) / mMax);
-        float startX = mCenterX + (float) Math.cos(rotateDegrees) * interCircleRadius;
-        float startY = mCenterY - (float) Math.sin(rotateDegrees) * interCircleRadius;
 
-        float stopX = mCenterX + (float) Math.cos(rotateDegrees) * outerCircleRadius;
-        float stopY = mCenterY - (float) Math.sin(rotateDegrees) * outerCircleRadius;
-        canvas.drawLine(startX, startY, stopX, stopY, mProgressTextPaint);
+        mInternalBackgroundPaint.setStrokeWidth(mSplitLineWidth);
+
+
+        if (mSplitList != null && mSplitList.size() > 0) {
+            for (int progress : mSplitList) {
+                if (progress >= 0 && progress < mProgress) {
+                    float rotateDegrees = (float) (-2.0f * Math.PI * (progress) / mMax);
+                    float startX = mCenterX + (float) Math.cos(rotateDegrees) * interCircleRadius;
+                    float startY = mCenterY - (float) Math.sin(rotateDegrees) * interCircleRadius;
+
+                    float stopX = mCenterX + (float) Math.cos(rotateDegrees) * outerCircleRadius;
+                    float stopY = mCenterY - (float) Math.sin(rotateDegrees) * outerCircleRadius;
+                    canvas.drawLine(startX, startY, stopX, stopY, mInternalBackgroundPaint);
+                }
+
+            }
+
+        }
+
     }
 
     /**
@@ -353,10 +399,18 @@ public class CircleProgressBar extends View {
         mProgressRectF.left = mCenterX - mRadius;
         mProgressRectF.right = mCenterX + mRadius;
 
+        mInternalProgressRectF.top = mProgressRectF.top;
+        mInternalProgressRectF.bottom = mProgressRectF.bottom;
+        mInternalProgressRectF.left = mProgressRectF.left;
+        mInternalProgressRectF.right = mProgressRectF.right;
+
         updateProgressShader();
 
         //Prevent the progress from clipping
-        mProgressRectF.inset(mProgressStrokeWidth / 2, mProgressStrokeWidth / 2);
+        float dx = mProgressStrokeWidth / 2;
+        float dy = mProgressStrokeWidth / 2;
+        mProgressRectF.inset(dx, dy);
+
     }
 
     public void setProgressFormatter(ProgressFormatter progressFormatter) {
@@ -426,6 +480,15 @@ public class CircleProgressBar extends View {
         mProgressPaint.setStrokeCap(cap);
         mProgressBackgroundPaint.setStrokeCap(cap);
         invalidate();
+    }
+
+    public void setSplitList(List<Integer> splitList) {
+        if (splitList != null && splitList.size() > 0) {
+            mSplitList.clear();
+            mSplitList.addAll(splitList);
+            invalidate();
+        }
+
     }
 
     public void setProgress(int progress) {
@@ -524,6 +587,11 @@ public class CircleProgressBar extends View {
         super.onRestoreInstanceState(ss.getSuperState());
 
         setProgress(ss.progress);
+    }
+
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 
 }

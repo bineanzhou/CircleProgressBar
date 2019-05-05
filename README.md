@@ -5,7 +5,7 @@
 The [CircleProgressBar](https://github.com/bineanzhou/CircleProgressBar) extends View, It has both solid and line two styles. Besides, progress value can be freely customized.
 If you are interested in cool loading animations, you can see [LoadingDrawable](https://github.com/bineanzhou/LoadingDrawable).
 
-![](https://raw.githubusercontent.com/dinuscxj/CircleProgressBar/master/Preview/CircleProgressBar.gif?width=300)
+![](https://raw.githubusercontent.com/dinuscxj/CircleProgressBar/master/Preview/CircleProgressBar.png?width=300)
 
 ### Usage
 
@@ -76,7 +76,7 @@ In the xml
 	android:layout_width="50dp"
 	android:layout_height="50dp"
 
-	app:style="line"
+	app:progress_style="line"
 	
 	app:background_color="@color/holo_red_light"
 
@@ -94,8 +94,8 @@ In the xml
     
 	app:progress_stroke_cap="round"
 
-	app:line_width="4dp"
-	app:line_count="30"/>
+	app:progress_line_width="4dp"
+	app:progress_line_count="30"/>
 ```
 
 format progress

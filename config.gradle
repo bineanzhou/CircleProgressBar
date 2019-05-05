@@ -1,0 +1,7 @@
+ext {
+
+    LIB_DIR_PATH = projectDir.getPath() +  "/libs"
+    build_time = new Date().format("YYYYMMdd", TimeZone.getDefault())
+
+}
+
