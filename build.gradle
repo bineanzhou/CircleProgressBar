@@ -3,6 +3,9 @@
 buildscript {
     apply from: "config.gradle"
     repositories {
+        flatDir {
+            dirs LIB_DIR_PATH
+        }
         jcenter()
         google()
     }
@@ -13,6 +16,9 @@ buildscript {
 
 allprojects {
     repositories {
+        flatDir {
+            dirs LIB_DIR_PATH
+        }
         google()
         jcenter()
     }
