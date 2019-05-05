@@ -22,6 +22,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.1.0'
-//    implementation project(':circleprogressbar')
-    implementation (name: 'circleprogressbar_V1.0.0_20190505', ext: 'aar')
+    implementation project(':circleprogressbar')
+//    implementation (name: 'circleprogressbar_V1.0.0_20190505', ext: 'aar')
 }

@@ -483,12 +483,15 @@ public class CircleProgressBar extends View {
     }
 
     public void setSplitList(List<Integer> splitList) {
+        mSplitList.clear();
         if (splitList != null && splitList.size() > 0) {
-            mSplitList.clear();
             mSplitList.addAll(splitList);
-            invalidate();
         }
-
+        invalidate();
+    }
+    public void clearSplit(){
+        mSplitList.clear();
+        invalidate();
     }
 
     public void setProgress(int progress) {

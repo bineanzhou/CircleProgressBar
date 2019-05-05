@@ -17,10 +17,8 @@
         app:internal_background_color = "@color/internal_bg_color"
         app:progress_background_color="@android:color/transparent"
         app:progress_end_color="@color/progress_color"
-        app:progress_shader="sweep"
         app:progress_start_color="@color/progress_color"
         app:progress_stroke_cap="round"
-
         app:progress_text_color="@color/progress_bg_color"
         app:progress_style="solid_line" />
 
